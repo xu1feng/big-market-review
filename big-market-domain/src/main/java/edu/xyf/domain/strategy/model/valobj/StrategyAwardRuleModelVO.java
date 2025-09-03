@@ -1,6 +1,6 @@
 package edu.xyf.domain.strategy.model.valobj;
 
-import edu.xyf.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import edu.xyf.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import edu.xyf.types.common.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

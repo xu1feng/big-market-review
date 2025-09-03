@@ -1,9 +1,9 @@
-package edu.xyf.domain.strategy.service.rule.factory;
+package edu.xyf.domain.strategy.service.rule.filter.factory;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import edu.xyf.domain.strategy.model.entity.RuleActionEntity;
 import edu.xyf.domain.strategy.service.annotation.LogicStrategy;
-import edu.xyf.domain.strategy.service.rule.ILogicFilter;
+import edu.xyf.domain.strategy.service.rule.filter.ILogicFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;

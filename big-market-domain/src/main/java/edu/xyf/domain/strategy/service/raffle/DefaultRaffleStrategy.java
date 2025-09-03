@@ -5,9 +5,11 @@ import edu.xyf.domain.strategy.model.entity.RuleActionEntity;
 import edu.xyf.domain.strategy.model.entity.RuleMatterEntity;
 import edu.xyf.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import edu.xyf.domain.strategy.repository.IStrategyRepository;
+import edu.xyf.domain.strategy.service.AbstractRaffleStrategy;
 import edu.xyf.domain.strategy.service.armory.IStrategyDispatch;
-import edu.xyf.domain.strategy.service.rule.ILogicFilter;
-import edu.xyf.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import edu.xyf.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
+import edu.xyf.domain.strategy.service.rule.filter.ILogicFilter;
+import edu.xyf.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,8 +32,8 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
     @Resource
     private DefaultLogicFactory logicFactory;
 
-    public DefaultRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch) {
-        super(repository, strategyDispatch);
+    public DefaultRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch, DefaultChainFactory defaultChainFactory) {
+        super(repository, strategyDispatch, defaultChainFactory);
     }
 
     @Override
