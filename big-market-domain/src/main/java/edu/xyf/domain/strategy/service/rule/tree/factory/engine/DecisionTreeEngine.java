@@ -29,8 +29,8 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
     }
 
     @Override
-    public DefaultTreeFactory.StrategyAwardData process(String userId, Long strategyId, Integer awardId) {
-        DefaultTreeFactory.StrategyAwardData strategyAwardData = null;
+    public DefaultTreeFactory.StrategyAwardVO process(String userId, Long strategyId, Integer awardId) {
+        DefaultTreeFactory.StrategyAwardVO strategyAwardData = null;
 
         // 获取基础信息
         String nextNode = ruleTreeVO.getTreeRootRuleNode();
@@ -45,7 +45,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
             // 决策节点计算
             DefaultTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId, awardId);
             RuleLogicCheckTypeVO ruleLogicCheckTypeVO = logicEntity.getRuleLogicCheckType();
-            strategyAwardData = logicEntity.getStrategyAwardData();
+            strategyAwardData = logicEntity.getStrategyAwardVO();
             log.info("决策树引擎【{}】treeId:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getTreeId(), nextNode, ruleLogicCheckTypeVO.getCode());
 
             // 获取下个节点
@@ -57,11 +57,9 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
         return strategyAwardData;
     }
 
-    private String nextNode(String matterValue, List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList) {
-        if (null == ruleTreeNodeLineVOList || ruleTreeNodeLineVOList.isEmpty()) {
-            return null;
-        }
-        for (RuleTreeNodeLineVO nodeLine : ruleTreeNodeLineVOList) {
+    public String nextNode(String matterValue, List<RuleTreeNodeLineVO> treeNodeLineVOList) {
+        if (null == treeNodeLineVOList || treeNodeLineVOList.isEmpty()) return null;
+        for (RuleTreeNodeLineVO nodeLine : treeNodeLineVOList) {
             if (decisionLogic(matterValue, nodeLine)) {
                 return nodeLine.getRuleNodeTo();
             }
