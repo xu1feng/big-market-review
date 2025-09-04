@@ -5,6 +5,7 @@ import edu.xyf.domain.strategy.model.entity.StrategyEntity;
 import edu.xyf.domain.strategy.model.entity.StrategyRuleEntity;
 import edu.xyf.domain.strategy.model.valobj.RuleTreeVO;
 import edu.xyf.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import edu.xyf.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -39,5 +40,15 @@ public interface IStrategyRepository {
     StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId);
 
     RuleTreeVO queryRuleTreeVOByTreeId(String treeId);
+
+    void cacheStrategyAwardCount(String cacheKey, Integer awardCount);
+
+    Boolean subtractionAwardStock(String cacheKey);
+
+    void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO);
+
+    StrategyAwardStockKeyVO takeQueueValue();
+
+    void updateStrategyAwardStock(Long strategyId, Integer awardId);
 
 }

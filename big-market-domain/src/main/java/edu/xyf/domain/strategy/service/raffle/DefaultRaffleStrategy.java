@@ -2,6 +2,7 @@ package edu.xyf.domain.strategy.service.raffle;
 
 import edu.xyf.domain.strategy.model.valobj.RuleTreeVO;
 import edu.xyf.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import edu.xyf.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 import edu.xyf.domain.strategy.repository.IStrategyRepository;
 import edu.xyf.domain.strategy.service.AbstractRaffleStrategy;
 import edu.xyf.domain.strategy.service.armory.IStrategyDispatch;
@@ -43,6 +44,16 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
         }
         IDecisionTreeEngine treeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
         return treeEngine.process(userId, strategyId, awardId);
+    }
+
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException {
+        return repository.takeQueueValue();
+    }
+
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
+        repository.updateStrategyAwardStock(strategyId, awardId);
     }
 
 }
