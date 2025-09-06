@@ -1,4 +1,4 @@
-package edu.xyf.domain.strategy.service.rule.tree.factory.engine;
+package edu.xyf.domain.strategy.service.rule.tree.factory.engine.impl;
 
 import edu.xyf.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import edu.xyf.domain.strategy.model.valobj.RuleTreeNodeLineVO;
@@ -6,6 +6,7 @@ import edu.xyf.domain.strategy.model.valobj.RuleTreeNodeVO;
 import edu.xyf.domain.strategy.model.valobj.RuleTreeVO;
 import edu.xyf.domain.strategy.service.rule.tree.ILogicTreeNode;
 import edu.xyf.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
+import edu.xyf.domain.strategy.service.rule.tree.factory.engine.IDecisionTreeEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
                 return nodeLine.getRuleNodeTo();
             }
         }
-        throw new RuntimeException("决策树引擎，nextNode 计算失败，未找到可执行节点！");
+        return null;
     }
 
     public boolean decisionLogic(String matterValue, RuleTreeNodeLineVO nodeLine) {
