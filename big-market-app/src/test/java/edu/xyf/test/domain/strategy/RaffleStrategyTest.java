@@ -1,4 +1,4 @@
-package edu.xyf.test.domain;
+package edu.xyf.test.domain.strategy;
 
 import com.alibaba.fastjson.JSON;
 import edu.xyf.domain.strategy.model.entity.RaffleAwardEntity;
