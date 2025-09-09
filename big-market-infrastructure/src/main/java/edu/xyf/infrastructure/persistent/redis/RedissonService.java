@@ -59,7 +59,9 @@ public class RedissonService implements IRedisService {
 
     @Override
     public long decr(String key) {
-        return redissonClient.getAtomicLong(key).decrementAndGet();
+//        return redissonClient.getAtomicLong(key).decrementAndGet();
+        // 有个小bug,当库存decr执行完毕,缓存层面库存从1到0的时候,返回false,在执行链那里会直接抛出异常,后续创建订单就会终止,所以会造成order订单19条,但库存消耗20个问题
+        return redissonClient.getAtomicLong(key).getAndDecrement();
     }
 
     @Override

@@ -220,8 +220,12 @@ public class ActivityRepository implements IActivityRepository {
     @Override
     public void clearQueueValue() {
         String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY;
-        RBlockingQueue<ActivitySkuStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
-        destinationQueue.clear();
+        // 不止需要将延迟队列清空，还需要将阻塞队列清空
+        // 否则库存为0时，MQ去消费的时候没办法把延迟队列里的消息情况，导致定时任务还会走
+        RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        RDelayedQueue<ActivitySkuStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
+        delayedQueue.clear();
+        blockingQueue.clear();
     }
 
     @Override
