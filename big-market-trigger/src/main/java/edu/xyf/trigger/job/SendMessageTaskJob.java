@@ -63,6 +63,8 @@ public class SendMessageTaskJob {
             }
         } catch (Exception e) {
             log.error("定时任务，扫描MQ任务发送消息失败。", e);
+        } finally {
+            dbRouter.clear();
         }
     }
 
