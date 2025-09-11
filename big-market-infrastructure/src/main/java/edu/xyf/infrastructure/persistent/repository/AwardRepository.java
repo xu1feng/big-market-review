@@ -9,8 +9,10 @@ import edu.xyf.domain.award.repository.IAwardRepository;
 import edu.xyf.infrastructure.event.EventPublisher;
 import edu.xyf.infrastructure.persistent.dao.ITaskDao;
 import edu.xyf.infrastructure.persistent.dao.IUserAwardRecordDao;
+import edu.xyf.infrastructure.persistent.dao.IUserRaffleOrderDao;
 import edu.xyf.infrastructure.persistent.po.Task;
 import edu.xyf.infrastructure.persistent.po.UserAwardRecord;
+import edu.xyf.infrastructure.persistent.po.UserRaffleOrder;
 import edu.xyf.types.enums.ResponseCode;
 import edu.xyf.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +41,13 @@ public class AwardRepository implements IAwardRepository {
     private TransactionTemplate transactionTemplate;
     @Resource
     private EventPublisher eventPublisher;
+    @Resource
+    private IUserRaffleOrderDao userRaffleOrderDao;
 
 
     @Override
     public void saveUserAwardRecord(UserAwardRecordAggregate userAwardRecordAggregate) {
+
         UserAwardRecordEntity userAwardRecordEntity = userAwardRecordAggregate.getUserAwardRecordEntity();
         TaskEntity taskEntity = userAwardRecordAggregate.getTaskEntity();
         String userId = userAwardRecordEntity.getUserId();
@@ -66,6 +71,10 @@ public class AwardRepository implements IAwardRepository {
         task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
         task.setState(taskEntity.getState().getCode());
 
+        UserRaffleOrder userRaffleOrderReq = new UserRaffleOrder();
+        userRaffleOrderReq.setUserId(userAwardRecordEntity.getUserId());
+        userRaffleOrderReq.setOrderId(userAwardRecordEntity.getOrderId());
+
         try {
             dbRouter.doRouter(userId);
             transactionTemplate.execute(status -> {
@@ -74,11 +83,18 @@ public class AwardRepository implements IAwardRepository {
                     userAwardRecordDao.insert(userAwardRecord);
                     // 写入任务
                     taskDao.insert(task);
+                    // 更新抽奖单
+                    int count = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrderReq);
+                    if (1 != count) {
+                        status.setRollbackOnly();
+                        log.error("写入中奖记录，用户抽奖单已使用过，不可重复抽奖 userId: {} activityId: {} awardId: {}", userId, activityId, awardId);
+                        throw new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getInfo());
+                    }
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("写入中奖记录，唯一索引冲突 userId: {} activityId: {} awardId: {}", userId, activityId, awardId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode());
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
                 }
             });
         } finally {
@@ -91,7 +107,7 @@ public class AwardRepository implements IAwardRepository {
             // 更新数据库记录，task 任务表
             taskDao.updateTaskSendMessageCompleted(task);
         } catch (Exception e) {
-            log.error("写入中奖记录，发送MQ消息失败 userId:{} topic:{}", userId, task.getTopic());
+            log.error("写入中奖记录，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
             taskDao.updateTaskSendMessageFail(task);
         }
 

@@ -2,8 +2,8 @@ package edu.xyf.trigger.api;
 
 import edu.xyf.trigger.api.dto.RaffleAwardListRequestDTO;
 import edu.xyf.trigger.api.dto.RaffleAwardListResponseDTO;
-import edu.xyf.trigger.api.dto.RaffleRequestDTO;
-import edu.xyf.trigger.api.dto.RaffleResponseDTO;
+import edu.xyf.trigger.api.dto.RaffleStrategyRequestDTO;
+import edu.xyf.trigger.api.dto.RaffleStrategyResponseDTO;
 import edu.xyf.types.model.Response;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2025/9/6 14:14
  */
 
-public interface IRaffleService {
+public interface IRaffleStrategyService {
 
     /**
      * 策略装配接口
@@ -38,6 +38,6 @@ public interface IRaffleService {
      * @param requestDTO 请求参数
      * @return 抽奖结果
      */
-    Response<RaffleResponseDTO> randomRaffle(RaffleRequestDTO requestDTO);
+    Response<RaffleStrategyResponseDTO> randomRaffle(RaffleStrategyRequestDTO requestDTO);
 
 }

@@ -1,6 +1,9 @@
 package edu.xyf.domain.activity.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: Xuyifeng
@@ -8,6 +11,9 @@ import lombok.Data;
  * @Date: 2025/9/10 14:08
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PartakeRaffleActivityEntity {
 
     /**
