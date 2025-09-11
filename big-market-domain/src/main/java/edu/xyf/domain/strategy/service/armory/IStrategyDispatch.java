@@ -1,5 +1,7 @@
 package edu.xyf.domain.strategy.service.armory;
 
+import java.util.Date;
+
 /**
  * @Author: Xuyifeng
  * @Description: 策略抽奖的调度
@@ -12,6 +14,6 @@ public interface IStrategyDispatch {
 
     Integer getRandomAwardId(Long strategyId, String ruleWeightValue);
 
-    Boolean subtractionAwardStock(Long strategyId, Integer awardId);
+    Boolean subtractionAwardStock(Long strategyId, Integer awardId, Date endDateTime);
 
 }

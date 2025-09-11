@@ -2,6 +2,8 @@ package edu.xyf.domain.strategy.service.rule.tree;
 
 import edu.xyf.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 
+import java.util.Date;
+
 /**
  * @Author: Xuyifeng
  * @Description: 规则树接口
@@ -10,6 +12,6 @@ import edu.xyf.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 
 public interface ILogicTreeNode {
 
-    DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId, String ruleValue);
+    DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId, String ruleValue, Date endDateTime);
 
 }

@@ -2,6 +2,8 @@ package edu.xyf.domain.strategy.service.rule.tree.factory.engine;
 
 import edu.xyf.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 
+import java.util.Date;
+
 /**
  * @Author: Xuyifeng
  * @Description: 规则数组合接口
@@ -10,6 +12,6 @@ import edu.xyf.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 
 public interface IDecisionTreeEngine {
 
-    DefaultTreeFactory.StrategyAwardVO process(String userId, Long strategyId, Integer awardId);
+    DefaultTreeFactory.StrategyAwardVO process(String userId, Long strategyId, Integer awardId, Date endDateTime);
 
 }

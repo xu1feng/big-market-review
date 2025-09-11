@@ -8,8 +8,10 @@ import edu.xyf.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import edu.xyf.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Xuyifeng
@@ -45,6 +47,8 @@ public interface IStrategyRepository {
 
     Boolean subtractionAwardStock(String cacheKey);
 
+    Boolean subtractionAwardStock(String cacheKey, Date endDateTime);
+
     void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO);
 
     StrategyAwardStockKeyVO takeQueueValue();
@@ -56,5 +60,7 @@ public interface IStrategyRepository {
     Long queryStrategyIdByActivityId(Long activityId);
 
     Integer queryTodayUserRaffleCount(String userId, Long strategyId);
+
+    Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
 
 }
