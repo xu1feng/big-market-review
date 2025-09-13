@@ -1,9 +1,6 @@
 package edu.xyf.trigger.api;
 
-import edu.xyf.trigger.api.dto.RaffleAwardListRequestDTO;
-import edu.xyf.trigger.api.dto.RaffleAwardListResponseDTO;
-import edu.xyf.trigger.api.dto.RaffleStrategyRequestDTO;
-import edu.xyf.trigger.api.dto.RaffleStrategyResponseDTO;
+import edu.xyf.trigger.api.dto.*;
 import edu.xyf.types.model.Response;
 
 import java.util.List;
@@ -31,6 +28,8 @@ public interface IRaffleStrategyService {
      * @return 奖品列表数据
      */
     Response<List<RaffleAwardListResponseDTO>> queryRaffleAwardList(RaffleAwardListRequestDTO requestDTO);
+
+    Response<List<RaffleStrategyRuleWeightResponseDTO>> queryRaffleStrategyRuleWeight(RaffleStrategyRuleWeightRequestDTO request);
 
     /**
      * 随机抽奖接口

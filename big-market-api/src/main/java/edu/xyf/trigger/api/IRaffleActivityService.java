@@ -2,6 +2,8 @@ package edu.xyf.trigger.api;
 
 import edu.xyf.trigger.api.dto.ActivityDrawRequestDTO;
 import edu.xyf.trigger.api.dto.ActivityDrawResponseDTO;
+import edu.xyf.trigger.api.dto.UserActivityAccountRequestDTO;
+import edu.xyf.trigger.api.dto.UserActivityAccountResponseDTO;
 import edu.xyf.types.model.Response;
 
 /**
@@ -35,5 +37,15 @@ public interface IRaffleActivityService {
      * @return 签到结果
      */
     Response<Boolean> calendarSignRebate(String userId);
+
+    /**
+     * 判断是否完成日历签到返利接口
+     *
+     * @param userId 用户ID
+     * @return 签到结果
+     */
+    Response<Boolean> isCalendarSignRebate(String userId);
+
+    Response<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO request);
 
 }

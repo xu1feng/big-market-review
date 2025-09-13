@@ -1,8 +1,6 @@
 package edu.xyf.domain.activity.service;
 
-import edu.xyf.domain.activity.model.entity.ActivityOrderEntity;
-import edu.xyf.domain.activity.model.entity.ActivityShopCartEntity;
-import edu.xyf.domain.activity.model.entity.SkuRechargeEntity;
+import edu.xyf.domain.activity.model.entity.*;
 
 /**
  * @Author: Xuyifeng
@@ -31,5 +29,9 @@ public interface IRaffleActivityAccountQuotaService {
     String createOrder(SkuRechargeEntity skuRechargeEntity);
 
     Integer queryRaffleActivityAccountDayPartakeCount(Long activityId, String userId);
+
+    ActivityAccountEntity queryActivityAccountEntity(Long activityId, String userId);
+
+    Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
 
 }

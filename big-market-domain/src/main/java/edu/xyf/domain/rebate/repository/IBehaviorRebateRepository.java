@@ -1,6 +1,7 @@
 package edu.xyf.domain.rebate.repository;
 
 import edu.xyf.domain.rebate.model.aggregate.BehaviorRebateAggregate;
+import edu.xyf.domain.rebate.model.entity.BehaviorRebateOrderEntity;
 import edu.xyf.domain.rebate.model.valobj.BehaviorTypeVO;
 import edu.xyf.domain.rebate.model.valobj.DailyBehaviorRebateVO;
 
@@ -17,5 +18,7 @@ public interface IBehaviorRebateRepository {
     List<DailyBehaviorRebateVO> queryDailyBehaviorRebateConfig(BehaviorTypeVO behaviorTypeVO);
 
     void saveUserRebateRecord(String userId, List<BehaviorRebateAggregate> behaviorRebateAggregates);
+
+    List<BehaviorRebateOrderEntity> queryOrderByOutBusinessNo(String userId, String outBusinessNo);
 
 }
