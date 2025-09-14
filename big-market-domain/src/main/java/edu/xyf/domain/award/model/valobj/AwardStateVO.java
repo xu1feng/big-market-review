@@ -14,10 +14,10 @@ public enum AwardStateVO {
 
     create("create", "创建"),
     complete("complete", "发奖完成"),
-    fail("fail", "发送失败"),
+    fail("fail", "发奖失败"),
     ;
 
     private final String code;
-    private final String info;
+    private final String desc;
 
 }

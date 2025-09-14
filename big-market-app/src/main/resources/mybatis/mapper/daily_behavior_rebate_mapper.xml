@@ -17,7 +17,6 @@
         select behavior_type, rebate_desc, rebate_type, rebate_config
         from daily_behavior_rebate
         where state = 'open'
-        and behavior_type = #{behaviorType}
     </select>
 
 </mapper>

@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class RaffleAwardListResponseDTO {
 
     // 奖品ID
@@ -28,6 +28,7 @@ public class RaffleAwardListResponseDTO {
     private Integer awardRuleLockCount;
     // 奖品是否解锁 - true 已解锁、false 未解锁
     private Boolean isAwardUnlock;
-    // 等待解锁次数 - 规则的抽奖N次解锁 - 用户已经抽奖次数
+    // 等待解锁次数 - 规定的抽奖N次解锁减去用户已经抽奖次数
     private Integer waitUnlockCount;
+
 }

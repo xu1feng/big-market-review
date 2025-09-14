@@ -1,4 +1,4 @@
-package edu.xyf.domain.strategy.model.valobj;
+package edu.xyf.domain.strategy.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,18 +7,19 @@ import lombok.NoArgsConstructor;
 
 /**
  * @Author: Xuyifeng
- * @Description: 策略奖品库存Key标识值对象
- * @Date: 2025/9/4 16:57
+ * @Description: 策略结果实体
+ * @Date: 2025/9/14 20:13
  */
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StrategyAwardStockKeyVO {
+public class AwardEntity {
 
-    // 策略ID
-    private Long strategyId;
-    // 奖品ID
+    /** 用户ID */
+    private String userId;
+    /** 奖品ID */
     private Integer awardId;
 
 }

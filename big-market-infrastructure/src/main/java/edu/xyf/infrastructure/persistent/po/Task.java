@@ -14,7 +14,7 @@ public class Task {
 
     /** 自增ID */
     private String id;
-    /** 用户ID */
+    /** 活动ID */
     private String userId;
     /** 消息主题 */
     private String topic;

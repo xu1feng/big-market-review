@@ -28,7 +28,6 @@ public class BehaviorRebateService implements IBehaviorRebateService {
 
     @Resource
     private IBehaviorRebateRepository behaviorRebateRepository;
-
     @Resource
     private SendRebateMessageEvent sendRebateMessageEvent;
 
@@ -36,15 +35,13 @@ public class BehaviorRebateService implements IBehaviorRebateService {
     public List<String> createOrder(BehaviorEntity behaviorEntity) {
         // 1. 查询返利配置
         List<DailyBehaviorRebateVO> dailyBehaviorRebateVOS = behaviorRebateRepository.queryDailyBehaviorRebateConfig(behaviorEntity.getBehaviorTypeVO());
-        if (null == dailyBehaviorRebateVOS || dailyBehaviorRebateVOS.isEmpty()) {
-            return new ArrayList<>();
-        }
+        if (null == dailyBehaviorRebateVOS || dailyBehaviorRebateVOS.isEmpty()) return new ArrayList<>();
 
         // 2. 构建聚合对象
         List<String> orderIds = new ArrayList<>();
         List<BehaviorRebateAggregate> behaviorRebateAggregates = new ArrayList<>();
         for (DailyBehaviorRebateVO dailyBehaviorRebateVO : dailyBehaviorRebateVOS) {
-            // 拼装业务ID：用户ID_返利类型_外部透传业务ID
+            // 拼装业务ID；用户ID_返利类型_外部透彻业务ID
             String bizId = behaviorEntity.getUserId() + Constants.UNDERLINE + dailyBehaviorRebateVO.getRebateType() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
             BehaviorRebateOrderEntity behaviorRebateOrderEntity = BehaviorRebateOrderEntity.builder()
                     .userId(behaviorEntity.getUserId())

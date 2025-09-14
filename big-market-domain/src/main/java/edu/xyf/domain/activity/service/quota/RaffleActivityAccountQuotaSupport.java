@@ -18,9 +18,9 @@ public class RaffleActivityAccountQuotaSupport {
 
     protected IActivityRepository activityRepository;
 
-    public RaffleActivityAccountQuotaSupport(DefaultActivityChainFactory defaultActivityChainFactory, IActivityRepository activityRepository) {
-        this.defaultActivityChainFactory = defaultActivityChainFactory;
+    public RaffleActivityAccountQuotaSupport(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
         this.activityRepository = activityRepository;
+        this.defaultActivityChainFactory = defaultActivityChainFactory;
     }
 
     public ActivitySkuEntity queryActivitySku(Long sku) {

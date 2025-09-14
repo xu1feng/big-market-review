@@ -44,11 +44,11 @@ public class AwardService implements IAwardService {
 
         // 构建聚合对象
         UserAwardRecordAggregate userAwardRecordAggregate = UserAwardRecordAggregate.builder()
-                .userAwardRecordEntity(userAwardRecordEntity)
                 .taskEntity(taskEntity)
+                .userAwardRecordEntity(userAwardRecordEntity)
                 .build();
 
-        // 保存聚合对象 - 一个事务下，用户的中奖记录
+        // 存储聚合对象 - 一个事务下，用户的中奖记录
         awardRepository.saveUserAwardRecord(userAwardRecordAggregate);
     }
 

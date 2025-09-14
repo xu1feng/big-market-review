@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  * @Date: 2025/9/3 14:13
  */
 @Slf4j
-public abstract class AbstractLogicChain implements ILogicChain {
+public abstract class AbstractLogicChain implements ILogicChain{
 
     private ILogicChain next;
 

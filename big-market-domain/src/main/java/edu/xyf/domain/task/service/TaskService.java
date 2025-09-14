@@ -11,10 +11,9 @@ import java.util.List;
 
 /**
  * @Author: Xuyifeng
- * @Description: 消息任务服务接口
+ * @Description: 消息任务服务
  * @Date: 2025/9/10 19:40
  */
-@Slf4j
 @Service
 public class TaskService implements ITaskService {
 

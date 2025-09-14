@@ -20,7 +20,7 @@ public class RuleTreeNodeVO {
 
     /** 规则树ID */
     private String treeId;
-    /** 规则树Key */
+    /** 规则Key */
     private String ruleKey;
     /** 规则描述 */
     private String ruleDesc;

@@ -18,12 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 public class RuleWeightVO {
 
+    // 原始规则值配置
     private String ruleValue;
-
+    // 权重值
     private Integer weight;
-
+    // 奖品配置
     private List<Integer> awardIds;
-
+    // 奖品列表
     private List<Award> awardList;
 
     @Getter

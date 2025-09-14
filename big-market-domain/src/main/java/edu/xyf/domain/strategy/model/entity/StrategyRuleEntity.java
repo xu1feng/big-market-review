@@ -37,12 +37,10 @@ public class StrategyRuleEntity {
 
     /**
      * 获取权重值
-     * 数据案例：4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
+     * 数据案例；4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
      */
     public Map<String, List<Integer>> getRuleWeightValues() {
-        if (!"rule_weight".equals(ruleModel)) {
-            return null;
-        }
+        if (!"rule_weight".equals(ruleModel)) return null;
         String[] ruleValueGroups = ruleValue.split(Constants.SPACE);
         Map<String, List<Integer>> resultMap = new HashMap<>();
         for (String ruleValueGroup : ruleValueGroups) {
@@ -61,9 +59,10 @@ public class StrategyRuleEntity {
             for (String valueString : valueStrings) {
                 values.add(Integer.parseInt(valueString));
             }
-            // 将键和值放入 Map 中
+            // 将键和值放入Map中
             resultMap.put(ruleValueGroup, values);
         }
+
         return resultMap;
     }
 

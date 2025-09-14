@@ -31,6 +31,9 @@ public class DefaultTreeFactory {
         return new DecisionTreeEngine(logicTreeNodeGroup, ruleTreeVO);
     }
 
+    /**
+     * 决策树个动作实习
+     */
     @Data
     @Builder
     @AllArgsConstructor
@@ -45,10 +48,9 @@ public class DefaultTreeFactory {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StrategyAwardVO {
+        /** 抽奖奖品ID - 内部流转使用 */
         private Integer awardId;
-        /**
-         * 抽奖奖品规则
-         */
+        /** 抽奖奖品规则 */
         private String awardRuleValue;
     }
 

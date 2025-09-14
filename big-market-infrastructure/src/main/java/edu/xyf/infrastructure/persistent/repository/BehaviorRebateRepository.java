@@ -98,7 +98,7 @@ public class BehaviorRebateRepository implements IBehaviorRebateRepository {
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("写入返利记录，唯一索引冲突 userId:{}", userId, e);
+                    log.error("写入返利记录，唯一索引冲突 userId: {}", userId, e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getInfo());
                 }
             });
@@ -118,7 +118,7 @@ public class BehaviorRebateRepository implements IBehaviorRebateRepository {
                 // 更新数据库记录，task 任务表
                 taskDao.updateTaskSendMessageCompleted(task);
             } catch (Exception e) {
-                log.error("写入返利记录，发送MQ消息失败 userId:{} topic:{}", userId, task.getTopic());
+                log.error("写入返利记录，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
                 taskDao.updateTaskSendMessageFail(task);
             }
         }
@@ -131,7 +131,6 @@ public class BehaviorRebateRepository implements IBehaviorRebateRepository {
         UserBehaviorRebateOrder userBehaviorRebateOrderReq = new UserBehaviorRebateOrder();
         userBehaviorRebateOrderReq.setUserId(userId);
         userBehaviorRebateOrderReq.setOutBusinessNo(outBusinessNo);
-
         // 2. 查询结果
         List<UserBehaviorRebateOrder> userBehaviorRebateOrderResList = userBehaviorRebateOrderDao.queryOrderByOutBusinessNo(userBehaviorRebateOrderReq);
         List<BehaviorRebateOrderEntity> behaviorRebateOrderEntities = new ArrayList<>(userBehaviorRebateOrderResList.size());

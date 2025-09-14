@@ -18,7 +18,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class RaffleFactorEntity {
 
+    /** 用户ID */
     private String userId;
+    /** 策略ID */
     private Long strategyId;
     /** 结束时间 */
     private Date endDateTime;

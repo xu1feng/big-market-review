@@ -20,7 +20,7 @@ public class RuleTree {
     private String treeName;
     /** 规则树描述 */
     private String treeDesc;
-    /** 规则树根入口规则 */
+    /** 规则根节点 */
     private String treeRootRuleKey;
     /** 创建时间 */
     private Date createTime;

@@ -24,9 +24,7 @@ public class UpdateActivitySkuStockJob {
     public void exec() {
         try {
             ActivitySkuStockKeyVO activitySkuStockKeyVO = skuStock.takeQueueValue();
-            if (null == activitySkuStockKeyVO) {
-                return;
-            }
+            if (null == activitySkuStockKeyVO) return;
             log.info("定时任务，更新活动sku库存 sku:{} activityId:{}", activitySkuStockKeyVO.getSku(), activitySkuStockKeyVO.getActivityId());
             skuStock.updateActivitySkuStock(activitySkuStockKeyVO.getSku());
         } catch (Exception e) {

@@ -47,4 +47,3 @@ public class UserActivityAccountResponseDTO {
     private Integer monthCountSurplus;
 
 }
-

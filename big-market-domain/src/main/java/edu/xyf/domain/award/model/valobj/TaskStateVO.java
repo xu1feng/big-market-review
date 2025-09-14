@@ -17,7 +17,7 @@ public enum TaskStateVO {
     fail("fail", "发送失败"),
     ;
 
-    private String code;
-    private String desc;
+    private final String code;
+    private final String desc;
 
 }

@@ -36,14 +36,13 @@ public class AwardRepository implements IAwardRepository {
     @Resource
     private IUserAwardRecordDao userAwardRecordDao;
     @Resource
+    private IUserRaffleOrderDao userRaffleOrderDao;
+    @Resource
     private IDBRouterStrategy dbRouter;
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
     private EventPublisher eventPublisher;
-    @Resource
-    private IUserRaffleOrderDao userRaffleOrderDao;
-
 
     @Override
     public void saveUserAwardRecord(UserAwardRecordAggregate userAwardRecordAggregate) {

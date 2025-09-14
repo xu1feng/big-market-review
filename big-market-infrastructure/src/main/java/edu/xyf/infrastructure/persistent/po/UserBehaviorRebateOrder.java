@@ -2,6 +2,8 @@ package edu.xyf.infrastructure.persistent.po;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @Author: Xuyifeng
  * @Description: 用户行为返利流水订单表 持久化对象
@@ -11,7 +13,7 @@ import lombok.Data;
 public class UserBehaviorRebateOrder {
 
     /** 自增ID */
-    private String id;
+    private Long id;
     /** 用户ID */
     private String userId;
     /** 订单ID */
@@ -24,13 +26,13 @@ public class UserBehaviorRebateOrder {
     private String rebateType;
     /** 返利配置【sku值，积分值】 */
     private String rebateConfig;
-    /** 业务防重ID - 外部透传，方便查询使用 */
+    /** 业务仿重ID - 外部透传，方便查询使用 */
     private String outBusinessNo;
     /** 业务ID - 拼接的唯一值 */
     private String bizId;
     /** 创建时间 */
-    private String createTime;
+    private Date createTime;
     /** 更新时间 */
-    private String updateTime;
+    private Date updateTime;
 
 }

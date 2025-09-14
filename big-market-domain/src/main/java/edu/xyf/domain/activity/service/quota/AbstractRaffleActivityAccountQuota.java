@@ -20,22 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityAccountQuotaSupport implements IRaffleActivityAccountQuotaService {
 
-    public AbstractRaffleActivityAccountQuota(DefaultActivityChainFactory defaultActivityChainFactory, IActivityRepository activityRepository) {
-        super(defaultActivityChainFactory, activityRepository);
-    }
-
-    @Override
-    public ActivityOrderEntity createRaffleActivityOrder(ActivityShopCartEntity activityShopCartEntity) {
-        // 1. 通过sku查询活动信息
-        ActivitySkuEntity activitySkuEntity = activityRepository.queryActivitySku(activityShopCartEntity.getSku());
-        // 2. 查询活动信息
-        ActivityEntity activityEntity = activityRepository.queryRaffleActivityByActivityId(activitySkuEntity.getActivityId());
-        // 3. 查询次数信息（用户在活动上可参与的次数）
-        ActivityCountEntity activityCountEntity = activityRepository.queryRaffleActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
-
-        log.info("查询结果：{} {} {}", JSON.toJSONString(activitySkuEntity), JSON.toJSONString(activityEntity), JSON.toJSONString(activityCountEntity));
-
-        return ActivityOrderEntity.builder().build();
+    public AbstractRaffleActivityAccountQuota(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
+        super(activityRepository, defaultActivityChainFactory);
     }
 
     @Override
@@ -56,7 +42,7 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         // 2.3 查询次数信息（用户在活动上可参与的次数）
         ActivityCountEntity activityCountEntity = queryRaffleActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
 
-        // 3. 活动动作规则校验 todo 后续处理规则过滤流程，暂时也不处理责任链结果
+        // 3. 活动动作规则校验 「过滤失败则直接抛异常」
         IActionChain actionChain = defaultActivityChainFactory.openActionChain();
         actionChain.action(activitySkuEntity, activityEntity, activityCountEntity);
 
@@ -70,8 +56,8 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         return createOrderAggregate.getActivityOrderEntity().getOrderId();
     }
 
-    protected abstract void doSaveOrder(CreateQuotaOrderAggregate createOrderAggregate);
-
     protected abstract CreateQuotaOrderAggregate buildOrderAggregate(SkuRechargeEntity skuRechargeEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
+
+    protected abstract void doSaveOrder(CreateQuotaOrderAggregate createOrderAggregate);
 
 }

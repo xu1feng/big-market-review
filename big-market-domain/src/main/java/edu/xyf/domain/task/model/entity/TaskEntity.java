@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TaskEntity {
 
-    /** 用户ID */
+    /** 活动ID */
     private String userId;
     /** 消息主题 */
     private String topic;
@@ -26,3 +26,4 @@ public class TaskEntity {
     private String message;
 
 }
+

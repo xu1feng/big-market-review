@@ -21,7 +21,7 @@ public class ActivitySkuStockZeroMessageEvent extends BaseEvent<Long> {
     @Override
     public EventMessage<Long> buildEventMessage(Long sku) {
         return EventMessage.<Long>builder()
-                .id(RandomStringUtils.randomNumeric(12))
+                .id(RandomStringUtils.randomNumeric(11))
                 .timestamp(new Date())
                 .data(sku)
                 .build();

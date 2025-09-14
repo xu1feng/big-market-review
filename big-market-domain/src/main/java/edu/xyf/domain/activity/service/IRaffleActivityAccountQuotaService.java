@@ -11,13 +11,6 @@ import edu.xyf.domain.activity.model.entity.*;
 public interface IRaffleActivityAccountQuotaService {
 
     /**
-     * 以sku创建抽奖活动订单，获得参与抽奖资格（可消耗次数）
-     * @param activityShopCartEntity 活动sku实体，通过sku领取活动
-     * @return 活动参与记录实体
-     */
-    ActivityOrderEntity createRaffleActivityOrder(ActivityShopCartEntity activityShopCartEntity);
-
-    /**
      * 创建 sku 账户充值订单，给用户增加抽奖次数
      * <p>
      * 1. 在【打卡、签到、分享、对话、积分兑换】等行为动作下，创建出活动订单，给用户的活动账户【日、月】充值可用的抽奖次数。
@@ -28,10 +21,31 @@ public interface IRaffleActivityAccountQuotaService {
      */
     String createOrder(SkuRechargeEntity skuRechargeEntity);
 
+    /**
+     * 查询活动账户 - 总，参与次数
+     *
+     * @param activityId 活动ID
+     * @param userId     用户ID
+     * @return 参与次数
+     */
+    Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
+
+    /**
+     * 查询活动账户 - 日，参与次数
+     *
+     * @param activityId 活动ID
+     * @param userId     用户ID
+     * @return 参与次数
+     */
     Integer queryRaffleActivityAccountDayPartakeCount(Long activityId, String userId);
 
+    /**
+     * 查询活动账户额度「总、月、日」
+     *
+     * @param activityId 活动ID
+     * @param userId     用户ID
+     * @return 账户实体
+     */
     ActivityAccountEntity queryActivityAccountEntity(Long activityId, String userId);
-
-    Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
 
 }

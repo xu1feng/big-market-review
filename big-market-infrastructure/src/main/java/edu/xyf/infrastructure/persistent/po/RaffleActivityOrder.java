@@ -68,12 +68,12 @@ public class RaffleActivityOrder {
     private Integer monthCount;
 
     /**
-     * 订单状态（not_used、used、expire）
+     * 订单状态
      */
     private String state;
 
     /**
-     * 业务防重ID - 外部透传的，确保幂等
+     * 业务仿重ID - 外部透传的，确保幂等
      */
     private String outBusinessNo;
 

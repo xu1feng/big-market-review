@@ -29,6 +29,14 @@ public abstract class AbstractRaffleActivityPartake implements IRaffleActivityPa
     }
 
     @Override
+    public UserRaffleOrderEntity createOrder(String userId, Long activityId) {
+        return createOrder(PartakeRaffleActivityEntity.builder()
+                .userId(userId)
+                .activityId(activityId)
+                .build());
+    }
+
+    @Override
     public UserRaffleOrderEntity createOrder(PartakeRaffleActivityEntity partakeRaffleActivityEntity) {
         // 0. 基础信息
         String userId = partakeRaffleActivityEntity.getUserId();
@@ -60,6 +68,7 @@ public abstract class AbstractRaffleActivityPartake implements IRaffleActivityPa
         // 4. 构建订单
         UserRaffleOrderEntity userRaffleOrder = this.buildUserRaffleOrder(userId, activityId, currentDate);
 
+
         // 5. 填充抽奖单实体对象
         createPartakeOrderAggregate.setUserRaffleOrderEntity(userRaffleOrder);
 
@@ -68,14 +77,6 @@ public abstract class AbstractRaffleActivityPartake implements IRaffleActivityPa
 
         // 7. 返回订单信息
         return userRaffleOrder;
-    }
-
-    @Override
-    public UserRaffleOrderEntity createOrder(String userId, Long activityId) {
-        return createOrder(PartakeRaffleActivityEntity.builder()
-                .userId(userId)
-                .activityId(activityId)
-                .build());
     }
 
     protected abstract CreatePartakeOrderAggregate doFilterAccount(String userId, Long activityId, Date currentDate);

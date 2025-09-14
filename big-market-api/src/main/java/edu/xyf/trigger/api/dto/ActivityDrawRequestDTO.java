@@ -7,7 +7,6 @@ import lombok.Data;
  * @Description: 活动抽奖请求对象
  * @Date: 2025/9/11 14:42
  */
-
 @Data
 public class ActivityDrawRequestDTO {
 

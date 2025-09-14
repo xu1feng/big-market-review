@@ -18,7 +18,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserRaffleOrder {
 
-
     private String id;
     /** 用户ID */
     private String userId;
