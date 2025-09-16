@@ -21,6 +21,8 @@ public interface IRaffleActivityAccountQuotaService {
      */
     String createOrder(SkuRechargeEntity skuRechargeEntity);
 
+    void updateOrder(DeliveryOrderEntity deliveryOrderEntity);
+
     /**
      * 查询活动账户 - 总，参与次数
      *

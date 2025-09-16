@@ -5,12 +5,15 @@ import edu.xyf.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import edu.xyf.domain.activity.model.entity.*;
 import edu.xyf.domain.activity.repository.IActivityRepository;
 import edu.xyf.domain.activity.service.IRaffleActivityAccountQuotaService;
+import edu.xyf.domain.activity.service.quota.policy.ITradePolicy;
 import edu.xyf.domain.activity.service.quota.rule.IActionChain;
 import edu.xyf.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import edu.xyf.types.enums.ResponseCode;
 import edu.xyf.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * @Author: Xuyifeng
@@ -20,8 +23,11 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityAccountQuotaSupport implements IRaffleActivityAccountQuotaService {
 
-    public AbstractRaffleActivityAccountQuota(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
+    private final Map<String, ITradePolicy> tradePolicyGroup;
+
+    public AbstractRaffleActivityAccountQuota(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory, Map<String, ITradePolicy> tradePolicyGroup) {
         super(activityRepository, defaultActivityChainFactory);
+        this.tradePolicyGroup = tradePolicyGroup;
     }
 
     @Override
@@ -50,14 +56,13 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         CreateQuotaOrderAggregate createOrderAggregate = buildOrderAggregate(skuRechargeEntity, activitySkuEntity, activityEntity, activityCountEntity);
 
         // 5. 保存订单
-        doSaveOrder(createOrderAggregate);
+        ITradePolicy tradePolicy = tradePolicyGroup.get(skuRechargeEntity.getOrderTradeType().getCode());
+        tradePolicy.trade(createOrderAggregate);
 
         // 6. 返回单号
         return createOrderAggregate.getActivityOrderEntity().getOrderId();
     }
 
     protected abstract CreateQuotaOrderAggregate buildOrderAggregate(SkuRechargeEntity skuRechargeEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
-
-    protected abstract void doSaveOrder(CreateQuotaOrderAggregate createOrderAggregate);
 
 }
