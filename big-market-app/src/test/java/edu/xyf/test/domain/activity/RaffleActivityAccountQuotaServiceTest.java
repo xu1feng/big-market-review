@@ -1,5 +1,6 @@
 package edu.xyf.test.domain.activity;
 
+
 import com.alibaba.fastjson.JSON;
 import edu.xyf.domain.activity.model.entity.SkuRechargeEntity;
 import edu.xyf.domain.activity.model.entity.UnpaidActivityOrderEntity;
@@ -8,7 +9,7 @@ import edu.xyf.domain.activity.service.IRaffleActivityAccountQuotaService;
 import edu.xyf.domain.activity.service.armory.IActivityArmory;
 import edu.xyf.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ public class RaffleActivityAccountQuotaServiceTest {
         skuRechargeEntity.setUserId("xiaofuge");
         skuRechargeEntity.setSku(9011L);
         // outBusinessNo 作为幂等仿重使用，同一个业务单号2次使用会抛出索引冲突 Duplicate entry '700091009111' for key 'uq_out_business_no' 确保唯一性。
-        skuRechargeEntity.setOutBusinessNo("700091009119");
+        skuRechargeEntity.setOutBusinessNo("700091009120");
         skuRechargeEntity.setOrderTradeType(OrderTradeTypeVO.rebate_no_pay_trade);
         UnpaidActivityOrderEntity unpaidActivityOrder = raffleActivityAccountQuotaService.createOrder(skuRechargeEntity);
         log.info("测试结果：{}", JSON.toJSONString(unpaidActivityOrder));
@@ -83,7 +84,7 @@ public class RaffleActivityAccountQuotaServiceTest {
         skuRechargeEntity.setUserId("xiaofuge");
         skuRechargeEntity.setSku(9011L);
         // outBusinessNo 作为幂等仿重使用，同一个业务单号2次使用会抛出索引冲突 Duplicate entry '700091009111' for key 'uq_out_business_no' 确保唯一性。
-        skuRechargeEntity.setOutBusinessNo("70009240609021");
+        skuRechargeEntity.setOutBusinessNo("70009240609076");
         skuRechargeEntity.setOrderTradeType(OrderTradeTypeVO.credit_pay_trade);
         UnpaidActivityOrderEntity unpaidActivityOrder = raffleActivityAccountQuotaService.createOrder(skuRechargeEntity);
         log.info("测试结果：{}", JSON.toJSONString(unpaidActivityOrder));

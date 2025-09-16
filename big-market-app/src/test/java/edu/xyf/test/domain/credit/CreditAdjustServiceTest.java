@@ -1,5 +1,6 @@
 package edu.xyf.test.domain.credit;
 
+
 import edu.xyf.domain.credit.model.entity.TradeEntity;
 import edu.xyf.domain.credit.model.valobj.TradeNameVO;
 import edu.xyf.domain.credit.model.valobj.TradeTypeVO;
@@ -34,7 +35,7 @@ public class CreditAdjustServiceTest {
         tradeEntity.setTradeName(TradeNameVO.REBATE);
         tradeEntity.setTradeType(TradeTypeVO.FORWARD);
         tradeEntity.setAmount(new BigDecimal("10.19"));
-        tradeEntity.setOutBusinessNo("100009909922");
+        tradeEntity.setOutBusinessNo("100009908899");
         creditAdjustService.createOrder(tradeEntity);
     }
 
@@ -45,7 +46,7 @@ public class CreditAdjustServiceTest {
         tradeEntity.setTradeName(TradeNameVO.REBATE);
         tradeEntity.setTradeType(TradeTypeVO.REVERSE);
         tradeEntity.setAmount(new BigDecimal("-10.19"));
-        tradeEntity.setOutBusinessNo("20000990994");
+        tradeEntity.setOutBusinessNo("20000990876");
         creditAdjustService.createOrder(tradeEntity);
     }
 
@@ -56,7 +57,7 @@ public class CreditAdjustServiceTest {
         tradeEntity.setTradeName(TradeNameVO.CONVERT_SKU);
         tradeEntity.setTradeType(TradeTypeVO.REVERSE);
         tradeEntity.setAmount(new BigDecimal("-1.68"));
-        tradeEntity.setOutBusinessNo("70009240609021");
+        tradeEntity.setOutBusinessNo("70009240609076");
         creditAdjustService.createOrder(tradeEntity);
 
         new CountDownLatch(1).await();
