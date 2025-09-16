@@ -366,35 +366,44 @@ public class RaffleActivityController implements IRaffleActivityService {
 
     @RequestMapping(value = "credit_pay_exchange_sku", method = RequestMethod.POST)
     @Override
-    public Response<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request) {
+    public Response<Boolean> creditPayExchangeSku(@RequestBody SkuProductShopCartRequestDTO request) {
         try {
             log.info("积分兑换商品开始 userId:{} sku:{}", request.getUserId(), request.getSku());
+            // 1. 创建兑换商品sku订单，outBusinessNo 每次创建出一个单号。
             UnpaidActivityOrderEntity unpaidActivityOrder = raffleActivityAccountQuotaService.createOrder(SkuRechargeEntity.builder()
                     .userId(request.getUserId())
                     .sku(request.getSku())
                     .outBusinessNo(RandomStringUtils.randomNumeric(12))
                     .orderTradeType(OrderTradeTypeVO.credit_pay_trade)
                     .build());
+            log.info("积分兑换商品，创建订单完成 userId:{} sku:{} outBusinessNo:{}", request.getUserId(), request.getSku(), unpaidActivityOrder.getOutBusinessNo());
 
+            // 2.支付兑换商品
             String orderId = creditAdjustService.createOrder(TradeEntity.builder()
                     .userId(unpaidActivityOrder.getUserId())
                     .tradeName(TradeNameVO.CONVERT_SKU)
                     .tradeType(TradeTypeVO.REVERSE)
-                    .amount(unpaidActivityOrder.getPayAmount())
+                    .amount(unpaidActivityOrder.getPayAmount().negate())
                     .outBusinessNo(unpaidActivityOrder.getOutBusinessNo())
                     .build());
+            log.info("积分兑换商品，支付订单完成  userId:{} sku:{} orderId:{}", request.getUserId(), request.getSku(), orderId);
 
-            log.info("积分兑换商品，支付订单完成 userId:{} sku:{}, orderId:{}", request.getUserId(), request.getSku(), orderId);
             return Response.<Boolean>builder()
                     .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getCode())
+                    .info(ResponseCode.SUCCESS.getInfo())
                     .data(true)
                     .build();
+        } catch (AppException e) {
+            log.error("积分兑换商品失败 userId:{} activityId:{}", request.getUserId(), request.getSku(), e);
+            return Response.<Boolean>builder()
+                    .code(e.getCode())
+                    .info(e.getInfo())
+                    .build();
         } catch (Exception e) {
-            log.info("积分兑换商品失败 userId:{} sku:{}", request.getUserId(), request.getSku());
+            log.error("积分兑换商品失败 userId:{} sku:{}", request.getUserId(), request.getSku(), e);
             return Response.<Boolean>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getCode())
+                    .info(ResponseCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
