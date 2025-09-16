@@ -1,6 +1,7 @@
 package edu.xyf.domain.credit.repository;
 
 import edu.xyf.domain.credit.model.aggregate.TradeAggregate;
+import edu.xyf.domain.credit.model.entity.CreditAccountEntity;
 
 /**
  * @Author: Xuyifeng
@@ -11,5 +12,7 @@ import edu.xyf.domain.credit.model.aggregate.TradeAggregate;
 public interface ICreditRepository {
 
     void saveUserCreditTradeOrder(TradeAggregate tradeAggregate);
+
+    CreditAccountEntity queryUserCreditAccount(String userId);
 
 }

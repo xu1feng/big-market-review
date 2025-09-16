@@ -1,10 +1,10 @@
 package edu.xyf.trigger.api;
 
-import edu.xyf.trigger.api.dto.ActivityDrawRequestDTO;
-import edu.xyf.trigger.api.dto.ActivityDrawResponseDTO;
-import edu.xyf.trigger.api.dto.UserActivityAccountRequestDTO;
-import edu.xyf.trigger.api.dto.UserActivityAccountResponseDTO;
+import edu.xyf.trigger.api.dto.*;
 import edu.xyf.types.model.Response;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @Author: Xuyifeng
@@ -53,5 +53,11 @@ public interface IRaffleActivityService {
      * @return 返回结果「总额度、月额度、日额度」
      */
     Response<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO request);
+
+    Response<List<SkuProductResponseDTO>> querySkuProductListByActivityId(Long activityId);
+
+    Response<BigDecimal> queryUserCreditAccount(String userId);
+
+    Response<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request);
 
 }

@@ -42,6 +42,15 @@
         where user_id = #{userId} and out_business_no = #{outBusinessNo}
     </select>
 
+    <select id="queryUnpaidActivityOrder" parameterType="edu.xyf.infrastructure.persistent.po.RaffleActivityOrder" resultMap="dataMap">
+        select user_id, order_id, out_business_no, pay_amount
+        from raffle_activity_order
+        where user_id = #{userId}
+          and state = 'wait_pay'
+          and order_time >= now() - interval 1 month
+        limit 1
+    </select>
+
     <update id="updateOrderCompleted" parameterType="edu.xyf.infrastructure.persistent.po.RaffleActivityOrder">
         update raffle_activity_order set state = 'completed', update_time = now()
         where user_id = #{userId} and out_business_no = #{outBusinessNo} and state = 'wait_pay'

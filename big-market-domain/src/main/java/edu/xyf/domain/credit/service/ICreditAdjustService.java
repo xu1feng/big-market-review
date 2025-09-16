@@ -1,5 +1,6 @@
 package edu.xyf.domain.credit.service;
 
+import edu.xyf.domain.credit.model.entity.CreditAccountEntity;
 import edu.xyf.domain.credit.model.entity.TradeEntity;
 
 /**
@@ -11,5 +12,7 @@ import edu.xyf.domain.credit.model.entity.TradeEntity;
 public interface ICreditAdjustService {
 
     String createOrder(TradeEntity tradeEntity);
+
+    CreditAccountEntity queryUserCreditAccount(String userId);
 
 }
