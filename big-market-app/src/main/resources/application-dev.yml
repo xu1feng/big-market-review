@@ -101,7 +101,7 @@ mini-db-router:
 # MyBatis 配置【如需使用记得打开】
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
-  config-location:  classpath:/mybatis/config/mybatis-config.xml
+  config-location: classpath:/mybatis/config/mybatis-config.xml
 
 # Redis
 redis:
@@ -129,7 +129,16 @@ dubbo:
     name: dubbo
     port: -1
   scan:
-    base-packages: cn.bugstack.trigger.api
+    base-packages: edu.xyf.trigger.api
+
+zookeeper:
+  sdk:
+    config:
+      connect-string: 127.0.0.1:2181
+      base-sleep-time-ms: 1000
+      max-retries: 3
+      session-timeout-ms: 18000
+      connection-timeout-ms: 30000
 
 # 日志
 logging:
