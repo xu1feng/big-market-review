@@ -37,7 +37,7 @@ public class DataSourceConfig {
     }
 
     @Configuration
-    @MapperScan(basePackages = "edu.xyf.infrastructure.persistent.dao", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
+    @MapperScan(basePackages = "edu.xyf.infrastructure.dao", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
     static class MysqlMyBatisConfig {
 
         @Bean("mysqlSqlSessionFactory")

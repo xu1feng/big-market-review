@@ -195,8 +195,9 @@ public class StrategyRepository implements IStrategyRepository {
                     .ruleLimitValue(RuleLogicCheckTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitValue()))
                     .build();
 
-            List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList = ruleTreeNodeLineMap.computeIfAbsent(ruleTreeNodeLine.getRuleNodeFrom(), k -> new ArrayList<>());
-            ruleTreeNodeLineVOList.add(ruleTreeNodeLineVO);
+            ruleTreeNodeLineMap
+                    .computeIfAbsent(ruleTreeNodeLine.getRuleNodeFrom(), k -> new ArrayList<>())
+                    .add(ruleTreeNodeLineVO);
         }
 
         // 2. tree node 转换为Map结构
@@ -236,6 +237,11 @@ public class StrategyRepository implements IStrategyRepository {
         return subtractionAwardStock(cacheKey, null);
     }
 
+    /**
+     * 扣减库存并加锁操作，decr和0对比，如果是incr操作就和总量对比，和总量对比可以动态添加库存
+     * @param cacheKey    缓存Key
+     * @param endDateTime 活动结束时间
+     */
     @Override
     public Boolean subtractionAwardStock(String cacheKey, Date endDateTime) {
         long surplus = redisService.decr(cacheKey);
@@ -262,7 +268,7 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO) {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY + Constants.UNDERLINE + strategyAwardStockKeyVO.getStrategyId() + Constants.UNDERLINE + strategyAwardStockKeyVO.getAwardId();
         RBlockingQueue<StrategyAwardStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
         RDelayedQueue<StrategyAwardStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
         delayedQueue.offer(strategyAwardStockKeyVO, 3, TimeUnit.SECONDS);
@@ -271,6 +277,13 @@ public class StrategyRepository implements IStrategyRepository {
     @Override
     public StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException {
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        RBlockingQueue<StrategyAwardStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
+        return destinationQueue.poll();
+    }
+
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue(Long strategyId, Integer awardId) throws InterruptedException {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY + Constants.UNDERLINE + strategyId + Constants.UNDERLINE + awardId;
         RBlockingQueue<StrategyAwardStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
         return destinationQueue.poll();
     }
@@ -402,6 +415,23 @@ public class StrategyRepository implements IStrategyRepository {
         redisService.setValue(cacheKey, ruleWeightVOS);
 
         return ruleWeightVOS;
+    }
+
+    @Override
+    public List<StrategyAwardStockKeyVO> queryOpenActivityStrategyAwardList() {
+        List<StrategyAward> strategyAwards = strategyAwardDao.queryOpenActivityStrategyAwardList();
+        if (null == strategyAwards || strategyAwards.isEmpty()) return null;
+
+        List<StrategyAwardStockKeyVO> strategyAwardStockKeyVOS = new ArrayList<>();
+        for (StrategyAward strategyAward: strategyAwards){
+            StrategyAwardStockKeyVO strategyAwardStockKeyVO = StrategyAwardStockKeyVO.builder()
+                    .strategyId(strategyAward.getStrategyId())
+                    .awardId(strategyAward.getAwardId())
+                    .build();
+            strategyAwardStockKeyVOS.add(strategyAwardStockKeyVO);
+        }
+
+        return strategyAwardStockKeyVOS;
     }
 
 }

@@ -55,6 +55,11 @@
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-javanica</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.xuxueli/xxl-job-core -->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+        </dependency>
 
         <!-- 系统模块 -->
         <dependency>
@@ -68,6 +73,12 @@
         <dependency>
             <groupId>edu.xyf</groupId>
             <artifactId>big-market-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.26.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -23,7 +23,9 @@ public interface IActivityRepository {
 
     ActivityCountEntity queryRaffleActivityCountByActivityCountId(Long activityCountId);
 
-    void doSaveOrder(CreateQuotaOrderAggregate createOrderAggregate);
+    void doSaveNoPayOrder(CreateQuotaOrderAggregate createOrderAggregate);
+
+    void doSaveCreditPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 
     void cacheActivitySkuStockCount(String cacheKey, Integer stockCount);
 
@@ -33,11 +35,17 @@ public interface IActivityRepository {
 
     ActivitySkuStockKeyVO takeQueueValue();
 
+    ActivitySkuStockKeyVO takeQueueValue(Long sku);
+
     void clearQueueValue();
+
+    void clearQueueValue(Long sku);
 
     void updateActivitySkuStock(Long sku);
 
     void clearActivitySkuStock(Long sku);
+
+    List<Long> querySkuList();
 
     UserRaffleOrderEntity queryNoUsedRaffleOrder(PartakeRaffleActivityEntity partakeRaffleActivityEntity);
 
@@ -56,10 +64,6 @@ public interface IActivityRepository {
     ActivityAccountEntity queryActivityAccountEntity(Long activityId, String userId);
 
     Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
-
-    void doSaveCreditPayOrder(CreateQuotaOrderAggregate createOrderAggregate);
-
-    void doSaveNoPayOrder(CreateQuotaOrderAggregate createOrderAggregate);
 
     void updateOrder(DeliveryOrderEntity deliveryOrderEntity);
 
