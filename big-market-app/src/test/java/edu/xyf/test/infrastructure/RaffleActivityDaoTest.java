@@ -1,8 +1,8 @@
 package edu.xyf.test.infrastructure;
 
 import com.alibaba.fastjson.JSON;
-import edu.xyf.infrastructure.persistent.dao.IRaffleActivityDao;
-import edu.xyf.infrastructure.persistent.po.RaffleActivity;
+import edu.xyf.infrastructure.dao.IRaffleActivityDao;
+import edu.xyf.infrastructure.dao.po.RaffleActivity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

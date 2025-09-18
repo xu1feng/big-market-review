@@ -3,7 +3,6 @@ package edu.xyf.test.infrastructure;
 import com.alibaba.fastjson.JSON;
 import edu.xyf.domain.strategy.model.valobj.RuleTreeVO;
 import edu.xyf.domain.strategy.repository.IStrategyRepository;
-import edu.xyf.infrastructure.persistent.po.RuleTree;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
