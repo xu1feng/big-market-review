@@ -1,6 +1,8 @@
 package edu.xyf.trigger.http;
 
 import com.alibaba.fastjson.JSON;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import edu.xyf.domain.activity.model.entity.*;
 import edu.xyf.domain.activity.model.valobj.OrderTradeTypeVO;
 import edu.xyf.domain.activity.service.IRaffleActivityAccountQuotaService;
@@ -26,6 +28,7 @@ import edu.xyf.domain.strategy.service.armory.IStrategyArmory;
 import edu.xyf.trigger.api.IRaffleActivityService;
 import edu.xyf.trigger.api.dto.*;
 import edu.xyf.types.annotations.DCCValue;
+import edu.xyf.types.annotations.RateLimiterAccessInterceptor;
 import edu.xyf.types.enums.ResponseCode;
 import edu.xyf.types.exception.AppException;
 import edu.xyf.types.model.Response;
@@ -61,6 +64,8 @@ public class RaffleActivityController implements IRaffleActivityService {
     @Resource
     private IRaffleActivityAccountQuotaService raffleActivityAccountQuotaService;
     @Resource
+    private IRaffleActivitySkuProductService raffleActivitySkuProductService;
+    @Resource
     private IRaffleStrategy raffleStrategy;
     @Resource
     private IAwardService awardService;
@@ -72,12 +77,11 @@ public class RaffleActivityController implements IRaffleActivityService {
     private IBehaviorRebateService behaviorRebateService;
     @Resource
     private ICreditAdjustService creditAdjustService;
-    @Resource
-    private IRaffleActivitySkuProductService raffleActivitySkuProductService;
 
     // dcc 统一配置中心动态配置降级开关
-    @DCCValue("degradeSwitch:open")
+    @DCCValue("degradeSwitch:close")
     private String degradeSwitch;
+
 
     /**
      * 活动装配 - 数据预热 | 把活动配置的对应的 sku 一起装配
@@ -132,13 +136,25 @@ public class RaffleActivityController implements IRaffleActivityService {
      * "userId":"xiaofuge",
      * "activityId": 100301
      * }'
+     * 限流配置
+     * RateLimiterAccessInterceptor
+     * key: 以用户ID作为拦截，这个用户访问次数限制
+     * fallbackMethod：失败后的回调方法，方法出入参保持一样
+     * permitsPerSecond：每秒的访问频次限制
+     * blacklistCount：超过多少次都被限制了，还访问的，扔到黑名单里24小时
      */
+    @RateLimiterAccessInterceptor(key = "userId", fallbackMethod = "drawRateLimiterError", permitsPerSecond = 1.0d, blacklistCount = 1)
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "150")
+    }, fallbackMethod = "drawHystrixError"
+    )
     @RequestMapping(value = "draw", method = RequestMethod.POST)
     @Override
     public Response<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         try {
             log.info("活动抽奖开始 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
-            if (!"open".equals(degradeSwitch)) {
+            // 0. 降级开关【open 开启、close 关闭】
+            if (StringUtils.isNotBlank(degradeSwitch) && "open".equals(degradeSwitch)) {
                 return Response.<ActivityDrawResponseDTO>builder()
                         .code(ResponseCode.DEGRADE_SWITCH.getCode())
                         .info(ResponseCode.DEGRADE_SWITCH.getInfo())
@@ -149,15 +165,18 @@ public class RaffleActivityController implements IRaffleActivityService {
             if (StringUtils.isBlank(request.getUserId()) || null == request.getActivityId()) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
             }
+
             // 2. 参与活动 - 创建参与记录订单
             UserRaffleOrderEntity orderEntity = raffleActivityPartakeService.createOrder(request.getUserId(), request.getActivityId());
             log.info("活动抽奖，创建订单 userId:{} activityId:{} orderId:{}", request.getUserId(), request.getActivityId(), orderEntity.getOrderId());
+
             // 3. 抽奖策略 - 执行抽奖
             RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(RaffleFactorEntity.builder()
                     .userId(orderEntity.getUserId())
                     .strategyId(orderEntity.getStrategyId())
                     .endDateTime(orderEntity.getEndDateTime())
                     .build());
+
             // 4. 存放结果 - 写入中奖记录
             UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()
                     .userId(orderEntity.getUserId())
@@ -170,7 +189,9 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .awardState(AwardStateVO.create)
                     .awardConfig(raffleAwardEntity.getAwardConfig())
                     .build();
+
             awardService.saveUserAwardRecord(userAwardRecord);
+
             // 5. 返回结果
             return Response.<ActivityDrawResponseDTO>builder()
                     .code(ResponseCode.SUCCESS.getCode())
@@ -194,6 +215,22 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .info(ResponseCode.UN_ERROR.getInfo())
                     .build();
         }
+    }
+
+    public Response<ActivityDrawResponseDTO> drawRateLimiterError(@RequestBody ActivityDrawRequestDTO request) {
+        log.info("活动抽奖限流 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
+        return Response.<ActivityDrawResponseDTO>builder()
+                .code(ResponseCode.RATE_LIMITER.getCode())
+                .info(ResponseCode.RATE_LIMITER.getInfo())
+                .build();
+    }
+
+    public Response<ActivityDrawResponseDTO> drawHystrixError(@RequestBody ActivityDrawRequestDTO request) {
+        log.info("活动抽奖熔断 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
+        return Response.<ActivityDrawResponseDTO>builder()
+                .code(ResponseCode.HYSTRIX.getCode())
+                .info(ResponseCode.HYSTRIX.getInfo())
+                .build();
     }
 
     /**
@@ -320,15 +357,15 @@ public class RaffleActivityController implements IRaffleActivityService {
             if (null == activityId) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
             }
-
-            // 2. 查询商品 & 封装数据
+            // 2. 查询商品&封装数据
             List<SkuProductEntity> skuProductEntities = raffleActivitySkuProductService.querySkuProductEntityListByActivityId(activityId);
             List<SkuProductResponseDTO> skuProductResponseDTOS = new ArrayList<>(skuProductEntities.size());
             for (SkuProductEntity skuProductEntity : skuProductEntities) {
+
                 SkuProductResponseDTO.ActivityCount activityCount = new SkuProductResponseDTO.ActivityCount();
                 activityCount.setTotalCount(skuProductEntity.getActivityCount().getTotalCount());
-                activityCount.setDayCount(skuProductEntity.getActivityCount().getMonthCount());
-                activityCount.setMonthCount(skuProductEntity.getActivityCount().getDayCount());
+                activityCount.setMonthCount(skuProductEntity.getActivityCount().getMonthCount());
+                activityCount.setDayCount(skuProductEntity.getActivityCount().getDayCount());
 
                 SkuProductResponseDTO skuProductResponseDTO = new SkuProductResponseDTO();
                 skuProductResponseDTO.setSku(skuProductEntity.getSku());
@@ -338,10 +375,9 @@ public class RaffleActivityController implements IRaffleActivityService {
                 skuProductResponseDTO.setStockCountSurplus(skuProductEntity.getStockCountSurplus());
                 skuProductResponseDTO.setProductAmount(skuProductEntity.getProductAmount());
                 skuProductResponseDTO.setActivityCount(activityCount);
-                skuProductResponseDTO.setSku(skuProductEntity.getSku());
-                skuProductResponseDTO.setActivityId(skuProductEntity.getActivityId());
                 skuProductResponseDTOS.add(skuProductResponseDTO);
             }
+
             log.info("查询sku商品集合完成 activityId:{} skuProductResponseDTOS:{}", activityId, JSON.toJSONString(skuProductResponseDTOS));
             return Response.<List<SkuProductResponseDTO>>builder()
                     .code(ResponseCode.SUCCESS.getCode())
@@ -349,7 +385,7 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .data(skuProductResponseDTOS)
                     .build();
         } catch (Exception e) {
-            log.info("查询sku商品集合失败 activityId:{}", activityId, e);
+            log.error("查询sku商品集合失败 activityId:{}", activityId, e);
             return Response.<List<SkuProductResponseDTO>>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())
@@ -363,20 +399,21 @@ public class RaffleActivityController implements IRaffleActivityService {
         try {
             log.info("查询用户积分值开始 userId:{}", userId);
             CreditAccountEntity creditAccountEntity = creditAdjustService.queryUserCreditAccount(userId);
-
+            log.info("查询用户积分值完成 userId:{} adjustAmount:{}", userId, creditAccountEntity.getAdjustAmount());
             return Response.<BigDecimal>builder()
                     .code(ResponseCode.SUCCESS.getCode())
                     .info(ResponseCode.SUCCESS.getInfo())
                     .data(creditAccountEntity.getAdjustAmount())
                     .build();
         } catch (Exception e) {
-            log.info("查询用户积分值失败 userId:{}", userId, e);
+            log.error("查询用户积分值失败 userId:{}", userId, e);
             return Response.<BigDecimal>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())
                     .build();
         }
     }
+
 
     @RequestMapping(value = "credit_pay_exchange_sku", method = RequestMethod.POST)
     @Override
