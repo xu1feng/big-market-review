@@ -166,6 +166,7 @@ services:
       - "8082:8081"
     volumes:
       - ./canal-adapter/application.yml:/opt/canal-adapter/conf/application.yml
+      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml
       - ./canal-adapter/es7:/opt/canal-adapter/conf/es7
     depends_on:
       - canal-server
