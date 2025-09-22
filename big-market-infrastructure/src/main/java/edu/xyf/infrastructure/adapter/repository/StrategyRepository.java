@@ -87,11 +87,11 @@ public class StrategyRepository implements IStrategyRepository {
      * 简单来说，getMap 方法返回的 RMap 对象是懒加载的，只有在你实际进行操作时，Redis 数据库中的数据结构才会被创建或修改。
      */
     @Override
-    public void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Integer> strategyAwardSearchRateTable) {
+    public <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable) {
         // 1. 存储抽奖策略范围值，如10000，用于生成1000以内的随机数
         redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
         // 2. 存储概率查找表
-        Map<Integer, Integer> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
+        Map<K, V> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
         cacheRateTable.putAll(strategyAwardSearchRateTable);
     }
 
@@ -239,6 +239,7 @@ public class StrategyRepository implements IStrategyRepository {
 
     /**
      * 扣减库存并加锁操作，decr和0对比，如果是incr操作就和总量对比，和总量对比可以动态添加库存
+     *
      * @param cacheKey    缓存Key
      * @param endDateTime 活动结束时间
      */
@@ -423,7 +424,7 @@ public class StrategyRepository implements IStrategyRepository {
         if (null == strategyAwards || strategyAwards.isEmpty()) return null;
 
         List<StrategyAwardStockKeyVO> strategyAwardStockKeyVOS = new ArrayList<>();
-        for (StrategyAward strategyAward: strategyAwards){
+        for (StrategyAward strategyAward : strategyAwards) {
             StrategyAwardStockKeyVO strategyAwardStockKeyVO = StrategyAwardStockKeyVO.builder()
                     .strategyId(strategyAward.getStrategyId())
                     .awardId(strategyAward.getAwardId())
@@ -432,6 +433,25 @@ public class StrategyRepository implements IStrategyRepository {
         }
 
         return strategyAwardStockKeyVOS;
+    }
+
+    @Override
+    public <K, V> Map<K, V> getMap(String key) {
+        return redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
+
+    }
+
+    @Override
+    public void cacheStrategyArmoryAlgorithm(String key, String beanName) {
+        String cacheKey = Constants.RedisKey.STRATEGY_ARMORY_ALGORITHM_KEY + key;
+        redisService.setValue(cacheKey, beanName);
+    }
+
+    @Override
+    public String queryStrategyArmoryAlgorithmFromCache(String key) {
+        String cacheKey = Constants.RedisKey.STRATEGY_ARMORY_ALGORITHM_KEY + key;
+        if (!redisService.isExists(cacheKey)) return null;
+        return redisService.getValue(cacheKey);
     }
 
 }
